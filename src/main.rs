@@ -1,3 +1,6 @@
 fn main() {
-    println!("Hello, world!");
+    let a: u16 = 50115;
+    let b: i16 = -15421;
+    println!("a: {:016b} {}", a, a);
+    println!("a: {:016b} {}", b, b);
 }
