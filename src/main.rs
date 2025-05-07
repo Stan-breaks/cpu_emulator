@@ -25,6 +25,7 @@ impl CPU {
             match (c, x, y, d) {
                 (0, 0, 0, 0) => return,
                 (0, 0, 0xE, 0xE) => self.ret(),
+                (0x1, _, _, _) => self.jump(nnn),
                 (0x2, _, _, _) => self.call(nnn),
                 (0x8, _, _, 0x4) => self.add_xy(x, y),
                 _ => todo!("opcode {:04x}", opcode),
@@ -48,6 +49,9 @@ impl CPU {
         self.stack_pointer -= 1;
         let call_addr = self.stack[self.stack_pointer];
         self.position_in_memory = call_addr as usize;
+    }
+    fn jump(&mut self, addr: u16) {
+        self.position_in_memory = addr as usize;
     }
     fn add_xy(&mut self, x: u8, y: u8) {
         let arg1 = self.registers[x as usize];
