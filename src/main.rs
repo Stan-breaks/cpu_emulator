@@ -28,6 +28,7 @@ impl CPU {
                 (0x1, _, _, _) => self.jump(nnn),
                 (0x2, _, _, _) => self.call(nnn),
                 (0x8, _, _, 0x4) => self.add_xy(x, y),
+                (0x8, _, _, 0x5) => self.sub_xy(x, y),
                 _ => todo!("opcode {:04x}", opcode),
             }
         }
@@ -64,6 +65,13 @@ impl CPU {
         } else {
             self.registers[0xF] = 0;
         }
+    }
+    fn sub_xy(&mut self, x: u8, y: u8) {
+        let arg1 = self.registers[x as usize];
+        let arg2 = self.registers[y as usize];
+
+        self.registers[0xF] = if arg1 >= arg2 { 1 } else { 0 };
+        self.registers[x as usize] = arg1 - arg2;
     }
 }
 fn main() {
