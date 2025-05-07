@@ -2,6 +2,8 @@ struct CPU {
     registers: [u8; 16],
     position_in_memory: usize,
     memory: [u8; 0x1000],
+    stack: [u16; 16],
+    stack_pointer: usize,
 }
 impl CPU {
     fn read_opcode(&self) -> u16 {
