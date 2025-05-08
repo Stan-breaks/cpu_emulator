@@ -59,6 +59,8 @@ impl CPU {
         let arg2 = self.registers[y as usize];
 
         let (val, overflow) = arg1.overflowing_add(arg2);
+
+        println!("{} + {} = {}", arg1, arg2, val);
         self.registers[x as usize] = val;
         if overflow {
             self.registers[0xF] = 1;
@@ -71,7 +73,9 @@ impl CPU {
         let arg2 = self.registers[y as usize];
 
         self.registers[0xF] = if arg1 >= arg2 { 1 } else { 0 };
-        self.registers[x as usize] = arg1 - arg2;
+        let val = arg2.wrapping_sub(arg1);
+        println!("{} - {} = {}", arg2, arg1, val);
+        self.registers[y as usize] = val;
     }
 }
 fn main() {
@@ -88,19 +92,21 @@ fn main() {
     let mem = &mut cpu.memory;
     mem[0x000] = 0x21;
     mem[0x001] = 0x00;
-    mem[0x002] = 0x21;
+    mem[0x002] = 0x22;
     mem[0x003] = 0x00;
     mem[0x004] = 0x00;
     mem[0x005] = 0x00;
 
     mem[0x100] = 0x80;
     mem[0x101] = 0x14;
-    mem[0x102] = 0x80;
-    mem[0x103] = 0x14;
-    mem[0x104] = 0x00;
-    mem[0x105] = 0xEE;
+    mem[0x102] = 0x00;
+    mem[0x103] = 0xEE;
+
+    mem[0x200] = 0x81;
+    mem[0x201] = 0x05;
+    mem[0x202] = 0x00;
+    mem[0x203] = 0xEE;
 
     cpu.run();
-    assert_eq!(cpu.registers[0], 45);
-    println!("5 + (10 * 2) + (10 * 2) = {}", cpu.registers[0]);
+    println!("{}", cpu.registers[0]);
 }
